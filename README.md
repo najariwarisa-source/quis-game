@@ -1,215 +1,659 @@
-<!DOCTYPE html>
-<html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DATA STRIKE // FINAL VERSION</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>DATA STRIKE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root { --v-red: #ff4655; --v-dark: #0f1923; --v-white: #ece8e1; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: 'Rajdhani', sans-serif;
-      background: var(--v-dark);
-      background: radial-gradient(circle, #161f2b 0%, #0f1923 100%);
-      color: var(--v-white);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      background: #0f1923 url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat fixed;
+      color: white;
+      overflow-x: hidden;
     }
 
-    /* Screen Setup */
-    .screen { 
-      display: none; 
-      justify-content: center; 
-      align-items: center; 
-      padding: 20px; 
-      width: 100%;
-      min-height: 100vh;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(15,25,35,.85), rgba(15,25,35,.92));
+      z-index: -1;
     }
-    .active { display: flex; }
+
+    .screen {
+      min-height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .active {
+      display: flex;
+    }
 
     .container {
-      width: 100%; 
-      max-width: 700px;
-      background: #111e2a;
-      border: 1px solid #ff465544;
-      border-left: 4px solid var(--v-red);
-      padding: 30px;
-      /* Memungkinkan scroll di dalam kotak jika konten panjang */
-      max-height: 90vh;
-      overflow-y: auto; 
+      width: 100%;
+      max-width: 950px;
+      background: rgba(20, 20, 20, 0.9);
+      border: 2px solid #ff4655;
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 0 25px rgba(255,70,85,0.5);
+      position: relative;
+      overflow: hidden;
     }
 
-    h1 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; color: var(--v-red); text-align: center; margin-bottom: 15px; }
-
-    /* TABEL RANKING - PERBAIKAN WARNA TULISAN */
-    .leaderboard-container { margin-bottom: 20px; border: 1px solid #ff465533; background: #000; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: var(--v-red); color: #000; padding: 10px; font-family: 'Orbitron'; font-size: 0.7rem; }
-    td { 
-      padding: 12px; 
-      text-align: center; 
-      border-bottom: 1px solid #222; 
-      font-family: 'Orbitron'; 
-      font-size: 0.8rem; 
-      color: #ffffff !important; /* Memaksa warna tulisan jadi putih */
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: #ff4655;
+      opacity: 0.2;
+      transform: rotate(45deg);
     }
 
-    input { width: 100%; padding: 12px; background: #000; border: 1px solid #ff4655; color: white; margin-bottom: 10px; font-family: 'Orbitron'; }
-    button { 
-      width: 100%; padding: 15px; background: var(--v-red); color: white; border: none; 
-      font-family: 'Orbitron'; font-weight: bold; cursor: pointer; text-transform: uppercase;
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      color: #ff4655;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
     }
-    button:hover { background: #fff; color: #000; }
 
-    /* QUIZ BUTTONS */
+    .subtitle {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #d7d7d7;
+      font-size: 1.2rem;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      color: #ff8c96;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #ff4655;
+      background: #111;
+      color: white;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #ff4655;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      background: #ff6d79;
+      transform: scale(1.02);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255,70,85,.15);
+      border: 1px solid #ff4655;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .question-box {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 25px;
+    }
+
+    .question-number {
+      color: #ff4655;
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+
+    .question {
+      font-size: 1.6rem;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .answers {
+      display: grid;
+      gap: 15px;
+    }
+
     .answer-btn {
-      width: 100%; padding: 12px; background: #161f2b; border: 1px solid #333;
-      color: white; text-align: left; margin-bottom: 8px; cursor: pointer; font-family: 'Rajdhani';
+      text-align: left;
+      background: #161f2b;
+      border: 1px solid #2f3d4f;
+      padding: 18px;
+      border-radius: 14px;
+      color: white;
+      font-size: 1rem;
+      transition: 0.25s;
     }
-    .answer-btn:hover { border-color: var(--v-red); background: #1a252f; }
 
-    /* LOADING SCREEN */
-    #loadingScreen { position: fixed; inset: 0; background: var(--v-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-    .loader-bar { width: 180px; height: 2px; background: #222; margin-top: 10px; }
-    .loader-fill { height: 100%; background: var(--v-red); width: 0%; transition: width 0.3s ease; }
+    .answer-btn:hover {
+      border-color: #ff4655;
+      background: #222d3a;
+    }
+
+    .correct {
+      background: #1f8f4d !important;
+      border-color: #1f8f4d !important;
+    }
+
+    .wrong {
+      background: #c53030 !important;
+      border-color: #c53030 !important;
+    }
+
+    .result-box {
+      text-align: center;
+    }
+
+    .score {
+      font-size: 5rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #ff4655;
+      margin: 20px 0;
+    }
+
+    .rank {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: gold;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .leaderboard {
+      margin-top: 35px;
+      background: rgba(255,255,255,.03);
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-align: center;
+    }
+
+    th {
+      color: #ff4655;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .screenshot-box {
+      margin-top: 25px;
+      background: rgba(255,70,85,.12);
+      border: 1px solid #ff4655;
+      padding: 18px;
+      border-radius: 14px;
+      color: #ffd7db;
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .warning {
+      background: rgba(255,70,85,.1);
+      border: 1px solid #ff4655;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      color: #ffb2b8;
+    }
+
+    .countdown {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #ff4655;
+    }
+
+    @media(max-width:768px){
+      h1 {
+        font-size: 2rem;
+      }
+
+      .question {
+        font-size: 1.2rem;
+      }
+
+      .score {
+        font-size: 3rem;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <div id="loadingScreen">
-    <h2 style="font-family: Orbitron; color: var(--v-red); font-size: 0.8rem;">SYNCING AGENT DATA...</h2>
-    <div class="loader-bar"><div id="loadingBar" class="loader-fill"></div></div>
-  </div>
 
+<div id="loadingScreen" style="position:fixed;inset:0;background:#0f1923;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:9999;color:white;font-family:Orbitron,sans-serif;">
+  <h1 style="color:#ff4655;font-size:3rem;letter-spacing:4px;">DATA STRIKE</h1>
+  <p style="margin-top:15px;color:#ccc">Initializing Mission...</p>
+  <div style="width:250px;height:8px;background:#222;border-radius:20px;margin-top:20px;overflow:hidden;">
+    <div id="loadingBar" style="height:100%;width:0%;background:#ff4655;"></div>
+  </div>
+</div>
+
+  <!-- LOGIN SCREEN -->
   <section class="screen active" id="loginScreen">
+    
     <div class="container">
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:120px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
+      </div>
       <h1>DATA STRIKE</h1>
-      <div class="leaderboard-container">
+      <p class="subtitle">Ranked Mission - Analisis Data</p>
+
+      <div class="leaderboard" style="margin-bottom:25px;">
+        <h2 style="font-family:Orbitron">🌍 GLOBAL RANK</h2>
         <table>
-          <thead><tr><th>#</th><th>AGENT</th><th>SCORE</th><th>TIER</th></tr></thead>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Player</th>
+              <th>Score</th>
+              <th>Rank</th>
+            </tr>
+          </thead>
           <tbody id="frontLeaderboard"></tbody>
         </table>
       </div>
-      <input type="text" id="nickname" placeholder="ENTER AGENT NAME..." maxlength="12">
-      <button onclick="startMission()">START MISSION</button>
+
+      <div class="warning">
+        ⚠️ Setiap pemain hanya bisa mengerjakan quiz satu kali di perangkat ini.
+      </div>
+
+      <div class="input-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="name" placeholder="Masukkan nama" />
+      </div>
+
+      <div class="input-group">
+        <label>Nickname Player</label>
+        <input type="text" id="nickname" placeholder="Masukkan nickname" />
+      </div>
+
+      <button onclick="startQuiz()">START MISSION</button>
+
+      
     </div>
   </section>
 
+  <!-- QUIZ SCREEN -->
   <section class="screen" id="quizScreen">
     <div class="container">
-      <div style="display:flex; justify-content: space-between; color:var(--v-red); font-family:Orbitron; margin-bottom: 20px;">
-        <div id="agentDisplay">AGENT: -</div>
-        <div>⏱️ <span id="timer">20</span></div>
+      <div class="top-bar">
+        <div class="badge" id="playerDisplay">PLAYER</div>
+        <div class="badge">Score: <span id="score">0</span></div>
+        <div class="badge countdown">⏱️ <span id="timer">20</span>s</div>
       </div>
-      <h2 id="questionText" style="margin-bottom: 20px; font-size: 1.3rem;"></h2>
-      <div id="answersContainer"></div>
+
+      <div class="question-box">
+        <div class="question-number" id="questionNumber">MISSION 01</div>
+        <div class="question" id="questionText"></div>
+
+        <div class="answers" id="answersContainer"></div>
+      </div>
     </div>
   </section>
 
+  <!-- RESULT SCREEN -->
   <section class="screen" id="resultScreen">
-    <div class="container" style="text-align: center;">
-      <h1 style="font-size: 1.5rem;">MISSION COMPLETE</h1>
-      <div id="finalScore" style="font-size: 5rem; color: var(--v-red); font-family: Orbitron;">0</div>
-      <div id="rankTier" style="font-family: Orbitron; margin-bottom: 25px; color:#aaa;">IRON</div>
-      <button onclick="location.reload()">RE-DEPLOY</button>
+    <div class="container result-box">
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:100px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
+      </div>
+      <h1>MISSION COMPLETE</h1>
+
+      <p class="subtitle">Hasil Akhir Ranked Match</p>
+
+      <div class="score" id="finalScore">0</div>
+
+      <div class="rank" id="rankText">IRON</div>
+
+      <p id="playerFinal"></p>
+
+      <div class="screenshot-box">
+        📸 Screenshot halaman skor ini lalu kirim kepada guru/panitia sebagai bukti hasil quiz.
+      </div>
+
+      <div class="leaderboard">
+        <h2 style="font-family:Orbitron">🏆 LEADERBOARD</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Score</th>
+              <th>Tier</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 
 <script>
-  let currentQ = 0, score = 0, nickname = '', timer;
-  
-  // SOAL DITAMBAH AGAR BANYAK
   const questions = [
-    { q: 'Tahap pertama dalam analisis data adalah...', a: ['Visualisasi', 'Pengumpulan Data', 'Penghapusan Data', 'Presentasi'], c: 1 },
-    { q: 'Grafik yang cocok untuk melihat kontribusi persentase adalah...', a: ['Line Chart', 'Bar Chart', 'Pie Chart', 'Scatter Plot'], c: 2 },
-    { q: 'Software yang sering digunakan untuk analisis data sederhana adalah...', a: ['Photoshop', 'Excel', 'Discord', 'Valorant'], c: 1 },
-    { q: 'Data yang berbentuk angka disebut data...', a: ['Kualitatif', 'Kuantitatif', 'Deskriptif', 'Narasi'], c: 1 },
-    { q: 'Apa kegunaan Mean dalam statistik?', a: ['Mencari nilai tengah', 'Mencari nilai rata-rata', 'Mencari nilai tersering', 'Mencari nilai tertinggi'], c: 1 },
-    { q: 'Visualisasi data bertujuan untuk...', a: ['Memperumit data', 'Mempercantik data saja', 'Memudahkan pemahaman informasi', 'Menyembunyikan fakta'], c: 2 }
+    {
+      question: 'Analisis data berarti ...',
+      answers: [
+        'Menggambar grafik tanpa data',
+        'Mengolah data agar lebih bermanfaat',
+        'Menghapus data mentah',
+        'Menyimpan data di komputer'
+      ],
+      correct: 1
+    },
+    {
+      question: 'Jenis grafik yang digunakan untuk visualisasi data adalah ...',
+      answers: [
+        'Pohon dan bunga',
+        'Kolom, garis, pai, batang',
+        'Tabel dan kursi',
+        'Jembatan dan rumah'
+      ],
+      correct: 1
+    },
+    {
+      question: 'Tujuan peringkasan data adalah ...',
+      answers: [
+        'Menambah jumlah data',
+        'Membuat data terlihat rumit',
+        'Menampilkan informasi penting saja',
+        'Menghapus semua data'
+      ],
+      correct: 2
+    },
+    {
+      question: 'Data mentah perlu diolah karena ...',
+      answers: [
+        'Sulit dibawa ke kelas',
+        'Tidak bisa dibaca komputer',
+        'Tidak langsung memberikan informasi',
+        'Selalu salah'
+      ],
+      correct: 2
+    },
+    {
+      question: 'Contoh penerapan analisis data di sekolah adalah ...',
+      answers: [
+        'Menggambar di papan tulis',
+        'Menentukan rata-rata nilai siswa',
+        'Bermain game online',
+        'Menghitung jumlah kursi di kelas'
+      ],
+      correct: 1
+    }
   ];
 
-  function loadLeaderboard() {
-    const lb = JSON.parse(localStorage.getItem('globalRank')) || [];
-    const tbody = document.getElementById('frontLeaderboard');
-    if(lb.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="color:#555; padding:10px;">AWAITING DATA...</td></tr>';
+  let currentQuestion = 0;
+  let score = 0;
+  let timer;
+  let timeLeft = 20;
+  let playerName = '';
+  let nickname = '';
+
+  function startQuiz() {
+    const played = localStorage.getItem('quizPlayed');
+
+    if(played === 'true') {
+      alert('Perangkat ini sudah pernah mengerjakan quiz dan tidak bisa mengulang lagi!');
       return;
     }
-    tbody.innerHTML = lb.map((p, i) => `
-      <tr>
-        <td>#${i+1}</td>
-        <td>${p.name.toUpperCase()}</td>
-        <td style="color:var(--v-red)">${p.score}</td>
-        <td>${p.tier}</td>
-      </tr>
-    `).join('');
-  }
 
-  function startMission() {
-    const val = document.getElementById('nickname').value.trim();
-    if(!val) return alert("NICKNAME REQUIRED");
-    nickname = val;
-    document.getElementById('agentDisplay').innerText = `AGENT: ${nickname.toUpperCase()}`;
+    playerName = document.getElementById('name').value.trim();
+    nickname = document.getElementById('nickname').value.trim();
+
+    if(!playerName || !nickname) {
+      alert('Isi semua data terlebih dahulu!');
+      return;
+    }
+
+    document.getElementById('playerDisplay').innerText = nickname;
+
     showScreen('quizScreen');
     loadQuestion();
   }
 
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => {
+      screen.classList.remove('active');
+    });
+
+    document.getElementById(screenId).classList.add('active');
+  }
+
   function loadQuestion() {
-    clearInterval(timer);
-    let timeLeft = 20;
-    document.getElementById('timer').innerText = timeLeft;
-    const data = questions[currentQ];
-    document.getElementById('questionText').innerText = data.q;
+    resetTimer();
+
+    const q = questions[currentQuestion];
+
+    document.getElementById('questionNumber').innerText = `MISSION ${String(currentQuestion + 1).padStart(2, '0')}`;
+    document.getElementById('questionText').innerText = q.question;
+
     const container = document.getElementById('answersContainer');
     container.innerHTML = '';
-    data.a.forEach((ans, i) => {
+
+    q.answers.forEach((answer, index) => {
       const btn = document.createElement('button');
-      btn.className = 'answer-btn';
-      btn.innerText = ans;
-      btn.onclick = () => { if(i === data.c) score += 16; nextQ(); };
+      btn.classList.add('answer-btn');
+      btn.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${answer}`;
+
+      btn.onclick = () => selectAnswer(index, btn);
+
       container.appendChild(btn);
     });
+
+    startTimer();
+  }
+
+  function selectAnswer(index, btn) {
+    clearInterval(timer);
+
+    const q = questions[currentQuestion];
+    const buttons = document.querySelectorAll('.answer-btn');
+
+    buttons.forEach(b => b.disabled = true);
+
+    if(index === q.correct) {
+      btn.classList.add('correct');
+      score += 20;
+      document.getElementById('score').innerText = score;
+    } else {
+      btn.classList.add('wrong');
+      buttons[q.correct].classList.add('correct');
+    }
+
+    setTimeout(() => {
+      currentQuestion++;
+
+      if(currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
+    }, 1500);
+  }
+
+  function startTimer() {
+    timeLeft = 20;
+    document.getElementById('timer').innerText = timeLeft;
+
     timer = setInterval(() => {
       timeLeft--;
       document.getElementById('timer').innerText = timeLeft;
-      if(timeLeft <= 0) nextQ();
+
+      if(timeLeft <= 0) {
+        clearInterval(timer);
+        currentQuestion++;
+
+        if(currentQuestion < questions.length) {
+          loadQuestion();
+        } else {
+          finishQuiz();
+        }
+      }
     }, 1000);
   }
 
-  function nextQ() {
-    currentQ++;
-    if(currentQ < questions.length) loadQuestion();
-    else finishMission();
+  function resetTimer() {
+    clearInterval(timer);
   }
 
-  function finishMission() {
-    clearInterval(timer);
-    const tier = score >= 80 ? 'RADIANT' : score >= 50 ? 'GOLD' : 'IRON';
+  function getRank(score) {
+    if(score >= 100) return 'RADIANT';
+    if(score >= 80) return 'PLATINUM';
+    if(score >= 60) return 'GOLD';
+    if(score >= 40) return 'SILVER';
+    if(score >= 20) return 'BRONZE';
+    return 'IRON';
+  }
+
+  function finishQuiz() {
+    const usedDevices = JSON.parse(localStorage.getItem('usedDevices')) || [];
+
+    if(!usedDevices.includes(nickname)) {
+      usedDevices.push(nickname);
+    }
+
+    localStorage.setItem('usedDevices', JSON.stringify(usedDevices));
+    localStorage.setItem('quizPlayed', 'true');
+
+    const rank = getRank(score);
+
     document.getElementById('finalScore').innerText = score;
-    document.getElementById('rankTier').innerText = tier;
-    
-    let lb = JSON.parse(localStorage.getItem('globalRank')) || [];
-    lb.push({ name: nickname, score: score, tier: tier });
-    lb.sort((a,b) => b.score - a.score);
-    localStorage.setItem('globalRank', JSON.stringify(lb.slice(0, 5)));
+    document.getElementById('rankText').innerText = rank;
+    document.getElementById('playerFinal').innerHTML = `Player <strong>${nickname}</strong> berhasil menyelesaikan ranked mission.`;
+
+    saveLeaderboard({
+      nickname,
+      score,
+      rank
+    });
+
+    loadLeaderboard();
+
     showScreen('resultScreen');
   }
 
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+  function saveLeaderboard(player) {
+    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    const existingPlayer = leaderboard.find(p => p.nickname.toLowerCase() === player.nickname.toLowerCase());
+
+    if(!existingPlayer) {
+      leaderboard.push(player);
+    }
+
+    leaderboard.sort((a,b) => b.score - a.score);
+
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
   }
 
-  window.onload = () => {
+  function loadLeaderboard() {
+    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    const body = document.getElementById('leaderboardBody');
+    const frontBody = document.getElementById('frontLeaderboard');
+
+    body.innerHTML = '';
+    frontBody.innerHTML = '';
+
+    leaderboard.sort((a,b) => b.score - a.score);
+
+    leaderboard.forEach((player, index) => {
+      const row = `
+        <tr>
+          <td>#${index + 1}</td>
+          <td>${player.nickname}</td>
+          <td>${player.score}</td>
+          <td>${player.rank}</td>
+        </tr>
+      `;
+
+      body.innerHTML += row;
+      frontBody.innerHTML += row;
+    });
+  }</td>
+          <td>${player.nickname}</td>
+          <td>${player.score}</td>
+          <td>${player.rank}</td>
+        </tr>
+      `;
+    });
+  }
+
+  window.addEventListener('load', () => {
     loadLeaderboard();
-    setTimeout(() => {
-      document.getElementById('loadingBar').style.width = '100%';
-      setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 300);
-    }, 200);
-  };
+    let progress = 0;
+    const bar = document.getElementById('loadingBar');
+
+    const loading = setInterval(() => {
+      progress += 10;
+      bar.style.width = progress + '%';
+
+      if(progress >= 100) {
+        clearInterval(loading);
+
+        setTimeout(() => {
+          document.getElementById('loadingScreen').style.display = 'none';
+        }, 500);
+      }
+    }, 120);
+  });
+
+  
 </script>
+
 </body>
-</html>
+
