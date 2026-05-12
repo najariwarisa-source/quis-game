@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DATA STRIKE RANKED</title>
+  <title>DATA STRIKE</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -11,7 +11,7 @@
       box-sizing: border-box;
     }body {
   font-family: 'Rajdhani', sans-serif;
-  background: #0f1923;
+  background: #0f1923 url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat fixed;
   color: white;
   overflow-x: hidden;
 }
@@ -20,11 +20,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background:
-    linear-gradient(rgba(15,25,35,.92), rgba(15,25,35,.92)),
-    url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(rgba(15,25,35,.85), rgba(15,25,35,.92));
   z-index: -1;
 }
 
@@ -264,7 +260,7 @@ th {
 </head>
 <body>
 <audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=future-bass-logo-112735.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/audio/2023/02/28/audio_5504c0a7c9.mp3" type="audio/mpeg">
 </audio><div id="loadingScreen" style="position:fixed;inset:0;background:#0f1923;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:9999;color:white;font-family:Orbitron,sans-serif;">
   <h1 style="color:#ff4655;font-size:3rem;letter-spacing:4px;">DATA STRIKE</h1>
   <p style="margin-top:15px;color:#ccc">Initializing Mission...</p>
@@ -273,6 +269,9 @@ th {
   </div>
 </div>  <!-- LOGIN SCREEN -->  <section class="screen active" id="loginScreen">
     <div class="container">
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:120px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
+      </div>
       <h1>DATA STRIKE</h1>
       <p class="subtitle">Ranked Mission - Analisis Data</p><div class="warning">
     ⚠️ Setiap pemain hanya bisa mengerjakan quiz satu kali di perangkat ini.
@@ -311,6 +310,9 @@ th {
 
   </section>  <!-- RESULT SCREEN -->  <section class="screen" id="resultScreen">
     <div class="container result-box">
+      <div style="display:flex;justify-content:center;margin-bottom:20px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:100px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
+      </div>
       <h1>MISSION COMPLETE</h1><p class="subtitle">Hasil Akhir Ranked Match</p>
 
   <div class="score" id="finalScore">0</div>
@@ -512,6 +514,13 @@ th {
   }
 
   function finishQuiz() {
+    const usedDevices = JSON.parse(localStorage.getItem('usedDevices')) || [];
+
+    if(!usedDevices.includes(nickname)) {
+      usedDevices.push(nickname);
+    }
+
+    localStorage.setItem('usedDevices', JSON.stringify(usedDevices));
     localStorage.setItem('quizPlayed', 'true');
 
     const rank = getRank(score);
@@ -534,7 +543,11 @@ th {
   function saveLeaderboard(player) {
     let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
-    leaderboard.push(player);
+    const existingPlayer = leaderboard.find(p => p.nickname.toLowerCase() === player.nickname.toLowerCase());
+
+    if(!existingPlayer) {
+      leaderboard.push(player);
+    }
 
     leaderboard.sort((a,b) => b.score - a.score);
 
@@ -547,7 +560,7 @@ th {
     const body = document.getElementById('leaderboardBody');
     body.innerHTML = '';
 
-    leaderboard.slice(0,10).forEach((player, index) => {
+    leaderboard.forEach((player, index) => {
       body.innerHTML += `
         <tr>
           <td>#${index + 1}</td>
@@ -587,13 +600,16 @@ th {
     }
   }
 
-  document.addEventListener('click', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     const music = document.getElementById('bgMusic');
+    music.volume = 0.35;
 
-    if(music.paused) {
-      music.volume = 0.3;
+    const startMusic = () => {
       music.play().catch(() => {});
-    }
-  }, { once:true });
+      document.removeEventListener('click', startMusic);
+    };
+
+    document.addEventListener('click', startMusic);
+  });
 </script></body>
 </html>
