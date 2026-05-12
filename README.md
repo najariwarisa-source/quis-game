@@ -268,12 +268,32 @@ th {
     <div id="loadingBar" style="height:100%;width:0%;background:#ff4655;"></div>
   </div>
 </div>  <!-- LOGIN SCREEN -->  <section class="screen active" id="loginScreen">
+    <div style="position:absolute;top:20px;right:20px;z-index:10;">
+      <button onclick="forcePlayMusic()" style="width:auto;padding:10px 18px;">
+        🎵 PLAY MUSIC
+      </button>
+    </div>
     <div class="container">
       <div style="display:flex;justify-content:center;margin-bottom:20px;">
         <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:120px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
       </div>
       <h1>DATA STRIKE</h1>
-      <p class="subtitle">Ranked Mission - Analisis Data</p><div class="warning">
+      <p class="subtitle">Ranked Mission - Analisis Data</p><div class="leaderboard" style="margin-bottom:25px;">
+    <h2 style="font-family:Orbitron">🌍 GLOBAL RANK</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Player</th>
+          <th>Score</th>
+          <th>Rank</th>
+        </tr>
+      </thead>
+      <tbody id="frontLeaderboard"></tbody>
+    </table>
+  </div>
+
+  <div class="warning">
     ⚠️ Setiap pemain hanya bisa mengerjakan quiz satu kali di perangkat ini.
   </div>
 
@@ -558,12 +578,25 @@ th {
     let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
     const body = document.getElementById('leaderboardBody');
+    const frontBody = document.getElementById('frontLeaderboard');
+
     body.innerHTML = '';
+    frontBody.innerHTML = '';
 
     leaderboard.forEach((player, index) => {
-      body.innerHTML += `
+      const row = `
         <tr>
           <td>#${index + 1}</td>
+          <td>${player.nickname}</td>
+          <td>${player.score}</td>
+          <td>${player.rank}</td>
+        </tr>
+      `;
+
+      body.innerHTML += row;
+      frontBody.innerHTML += row;
+    });
+  }</td>
           <td>${player.nickname}</td>
           <td>${player.score}</td>
           <td>${player.rank}</td>
@@ -573,6 +606,7 @@ th {
   }
 
   window.addEventListener('load', () => {
+    loadLeaderboard();
     let progress = 0;
     const bar = document.getElementById('loadingBar');
 
@@ -596,6 +630,17 @@ th {
     if(music.paused) {
       music.play();
     } else {
+      music.pause();
+    }
+  }
+
+  function forcePlayMusic() {
+    const music = document.getElementById('bgMusic');
+    music.volume = 0.4;
+    music.play().catch(() => {
+      alert('Browser memblokir autoplay. Tekan lagi tombol musik.');
+    });
+  } else {
       music.pause();
     }
   }
