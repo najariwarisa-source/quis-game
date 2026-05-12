@@ -1,660 +1,267 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DATA STRIKE</title>
+  <title>DATA STRIKE - RANKED MISSION</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }body {
-  font-family: 'Rajdhani', sans-serif;
-  background: #0f1923 url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat fixed;
-  color: white;
-  overflow-x: hidden;
-}
+    /* CSS THEME VALORANT */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: #0f1923 url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat fixed;
+      color: white; overflow-x: hidden;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background: linear-gradient(rgba(15,25,35,.85), rgba(15,25,35,.92)); z-index: -1;
+    }
+    .screen { min-height: 100vh; display: none; justify-content: center; align-items: center; padding: 20px; }
+    .active { display: flex; }
+    .container {
+      width: 100%; max-width: 900px; background: rgba(20, 20, 20, 0.95);
+      border: 2px solid #ff4655; border-radius: 15px; padding: 30px;
+      box-shadow: 0 0 30px rgba(255,70,85,0.4); position: relative;
+    }
+    h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: #ff4655; text-align: center; margin-bottom: 5px; letter-spacing: 3px; }
+    .subtitle { text-align: center; margin-bottom: 25px; color: #aaa; font-size: 1rem; text-transform: uppercase; }
+    
+    /* INPUT & BUTTON */
+    .input-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; color: #ff4655; font-weight: bold; }
+    input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #333; background: #111; color: white; font-size: 1rem; }
+    button {
+      width: 100%; padding: 15px; border: none; background: #ff4655; color: white; 
+      font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Orbitron', sans-serif; margin-top: 10px;
+    }
+    button:hover { background: #ff6d79; filter: brightness(1.2); }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(rgba(15,25,35,.85), rgba(15,25,35,.92));
-  z-index: -1;
-}
+    /* LEADERBOARD TABLE */
+    .leaderboard-container { margin-top: 20px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+    th { color: #ff4655; text-transform: uppercase; padding: 10px; border-bottom: 2px solid #ff4655; }
+    td { padding: 10px; text-align: center; border-bottom: 1px solid #333; }
+    .rank-tag { font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+    
+    /* QUIZ UI */
+    .top-bar { display: flex; justify-content: space-between; margin-bottom: 20px; background: #161f2b; padding: 10px; border-radius: 8px; }
+    .question { font-size: 1.5rem; margin-bottom: 20px; font-weight: 600; }
+    .answers { display: grid; gap: 10px; }
+    .answer-btn { text-align: left; background: #1f2933; border: 1px solid #333; padding: 15px; color: white; cursor: pointer; border-radius: 5px; }
+    .answer-btn:hover { border-color: #ff4655; }
+    .correct { background: #1f8f4d !important; }
+    .wrong { background: #c53030 !important; }
 
-.screen {
-  min-height: 100vh;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-}
-
-.active {
-  display: flex;
-}
-
-.container {
-  width: 100%;
-  max-width: 950px;
-  background: rgba(20, 20, 20, 0.9);
-  border: 2px solid #ff4655;
-  border-radius: 20px;
-  padding: 35px;
-  box-shadow: 0 0 25px rgba(255,70,85,0.5);
-  position: relative;
-  overflow: hidden;
-}
-
-.container::before {
-  content: "";
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 150px;
-  height: 150px;
-  background: #ff4655;
-  opacity: 0.2;
-  transform: rotate(45deg);
-}
-
-h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 3rem;
-  color: #ff4655;
-  text-align: center;
-  margin-bottom: 10px;
-  letter-spacing: 2px;
-}
-
-.subtitle {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #d7d7d7;
-  font-size: 1.2rem;
-}
-
-.input-group {
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 1rem;
-  color: #ff8c96;
-}
-
-input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #ff4655;
-  background: #111;
-  color: white;
-  font-size: 1rem;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  border: none;
-  border-radius: 12px;
-  background: #ff4655;
-  color: white;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1px;
-}
-
-button:hover {
-  background: #ff6d79;
-  transform: scale(1.02);
-}
-
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.badge {
-  background: rgba(255,70,85,.15);
-  border: 1px solid #ff4655;
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: bold;
-}
-
-.question-box {
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px;
-  padding: 25px;
-}
-
-.question-number {
-  color: #ff4655;
-  font-family: 'Orbitron', sans-serif;
-  margin-bottom: 15px;
-  font-size: 1rem;
-}
-
-.question {
-  font-size: 1.6rem;
-  margin-bottom: 25px;
-  line-height: 1.5;
-}
-
-.answers {
-  display: grid;
-  gap: 15px;
-}
-
-.answer-btn {
-  text-align: left;
-  background: #161f2b;
-  border: 1px solid #2f3d4f;
-  padding: 18px;
-  border-radius: 14px;
-  color: white;
-  font-size: 1rem;
-  transition: 0.25s;
-}
-
-.answer-btn:hover {
-  border-color: #ff4655;
-  background: #222d3a;
-}
-
-.correct {
-  background: #1f8f4d !important;
-  border-color: #1f8f4d !important;
-}
-
-.wrong {
-  background: #c53030 !important;
-  border-color: #c53030 !important;
-}
-
-.result-box {
-  text-align: center;
-}
-
-.score {
-  font-size: 5rem;
-  font-family: 'Orbitron', sans-serif;
-  color: #ff4655;
-  margin: 20px 0;
-}
-
-.rank {
-  font-size: 2rem;
-  margin-bottom: 15px;
-  color: gold;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.leaderboard {
-  margin-top: 35px;
-  background: rgba(255,255,255,.03);
-  border-radius: 15px;
-  padding: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-th, td {
-  padding: 14px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  text-align: center;
-}
-
-th {
-  color: #ff4655;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.warning {
-  background: rgba(255,70,85,.1);
-  border: 1px solid #ff4655;
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  color: #ffb2b8;
-}
-
-.countdown {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #ff4655;
-}
-
-@media(max-width:768px){
-  h1 {
-    font-size: 2rem;
-  }
-
-  .question {
-    font-size: 1.2rem;
-  }
-
-  .score {
-    font-size: 3rem;
-  }
-}
-
+    /* LOADING BAR */
+    #loadingScreen { position:fixed; inset:0; background:#0f1923; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; }
+    .bar-bg { width: 200px; height: 5px; background: #222; margin-top: 15px; overflow: hidden; }
+    .bar-fill { height: 100%; width: 0%; background: #ff4655; transition: 0.1s; }
   </style>
 </head>
 <body>
-<audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/audio/2023/02/28/audio_5504c0a7c9.mp3" type="audio/mpeg">
-</audio><div id="loadingScreen" style="position:fixed;inset:0;background:#0f1923;display:flex;justify-content:center;align-items:center;flex-direction:column;z-index:9999;color:white;font-family:Orbitron,sans-serif;">
-  <h1 style="color:#ff4655;font-size:3rem;letter-spacing:4px;">DATA STRIKE</h1>
-  <p style="margin-top:15px;color:#ccc">Initializing Mission...</p>
-  <div style="width:250px;height:8px;background:#222;border-radius:20px;margin-top:20px;overflow:hidden;">
-    <div id="loadingBar" style="height:100%;width:0%;background:#ff4655;"></div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/audio/2023/02/28/audio_5504c0a7c9.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="loadingScreen">
+    <h1 style="font-size: 1.5rem;">INITIALIZING MISSION</h1>
+    <div class="bar-bg"><div id="loadingBar" class="bar-fill"></div></div>
   </div>
-</div>  <!-- LOGIN SCREEN -->  <section class="screen active" id="loginScreen">
-    <div style="position:absolute;top:20px;right:20px;z-index:10;">
-      <button onclick="forcePlayMusic()" style="width:auto;padding:10px 18px;">
-        🎵 PLAY MUSIC
-      </button>
-    </div>
+
+  <section class="screen active" id="loginScreen">
     <div class="container">
-      <div style="display:flex;justify-content:center;margin-bottom:20px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:120px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
-      </div>
       <h1>DATA STRIKE</h1>
-      <p class="subtitle">Ranked Mission - Analisis Data</p><div class="leaderboard" style="margin-bottom:25px;">
-    <h2 style="font-family:Orbitron">🌍 GLOBAL RANK</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Player</th>
-          <th>Score</th>
-          <th>Rank</th>
-        </tr>
-      </thead>
-      <tbody id="frontLeaderboard"></tbody>
-    </table>
-  </div>
+      <p class="subtitle">Ranked Analysis Division</p>
 
-  <div class="warning">
-    ⚠️ Setiap pemain hanya bisa mengerjakan quiz satu kali di perangkat ini.
-  </div>
+      <div class="leaderboard-container">
+        <h3 style="font-family: Orbitron; text-align: center; font-size: 0.9rem;">🏆 GLOBAL PLAYER RANKING</h3>
+        <table>
+          <thead>
+            <tr><th>Rank</th><th>Agent</th><th>Score</th><th>Tier</th></tr>
+          </thead>
+          <tbody id="frontLeaderboard">
+            </tbody>
+        </table>
+      </div>
 
-  <div class="input-group">
-    <label>Nama Lengkap</label>
-    <input type="text" id="name" placeholder="Masukkan nama" />
-  </div>
+      <div style="margin-top: 25px;">
+        <div class="input-group">
+          <label>NAMA LENGKAP</label>
+          <input type="text" id="name" placeholder="Agent Name..." />
+        </div>
+        <div class="input-group">
+          <label>NICKNAME</label>
+          <input type="text" id="nickname" placeholder="Callsign..." />
+        </div>
+        <button onclick="startQuiz()">START MISSION</button>
+      </div>
+      <p style="font-size: 0.7rem; text-align: center; margin-top: 10px; color: #666;">Klik tombol di atas untuk mengaktifkan audio misi.</p>
+    </div>
+  </section>
 
-  <div class="input-group">
-    <label>Nickname Player</label>
-    <input type="text" id="nickname" placeholder="Masukkan nickname" />
-  </div>
-
-  <button onclick="startQuiz()">START MISSION</button>
-
-  <button onclick="toggleMusic()" style="margin-top:12px;background:#1d2733;border:1px solid #ff4655;">
-    🔊 TOGGLE MUSIC
-  </button>
-</div>
-
-  </section>  <!-- QUIZ SCREEN -->  <section class="screen" id="quizScreen">
+  <section class="screen" id="quizScreen">
     <div class="container">
       <div class="top-bar">
-        <div class="badge" id="playerDisplay">PLAYER</div>
-        <div class="badge">Score: <span id="score">0</span></div>
-        <div class="badge countdown">⏱️ <span id="timer">20</span>s</div>
-      </div><div class="question-box">
-    <div class="question-number" id="questionNumber">MISSION 01</div>
-    <div class="question" id="questionText"></div>
-
-    <div class="answers" id="answersContainer"></div>
-  </div>
-</div>
-
-  </section>  <!-- RESULT SCREEN -->  <section class="screen" id="resultScreen">
-    <div class="container result-box">
-      <div style="display:flex;justify-content:center;margin-bottom:20px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Valorant_logo_-_pink_color_version.svg" alt="logo" style="width:100px;filter:drop-shadow(0 0 12px rgba(255,70,85,.8));">
+        <div id="playerDisplay" style="color: #ff4655; font-weight: bold;">AGENT: -</div>
+        <div>SCORE: <span id="score">0</span></div>
+        <div style="color: #ff4655;">⏱️ <span id="timer">20</span>s</div>
       </div>
-      <h1>MISSION COMPLETE</h1><p class="subtitle">Hasil Akhir Ranked Match</p>
+      <div class="question-box">
+        <div id="questionNumber" style="color: #ff4655; font-family: Orbitron; margin-bottom: 10px;">MISSION 01</div>
+        <div id="questionText" class="question">Memuat pertanyaan...</div>
+        <div id="answersContainer" class="answers"></div>
+      </div>
+    </div>
+  </section>
 
-  <div class="score" id="finalScore">0</div>
+  <section class="screen" id="resultScreen">
+    <div class="container" style="text-align: center;">
+      <h1 style="font-size: 1.8rem;">MISSION COMPLETE</h1>
+      <div id="finalScore" style="font-size: 4rem; color: #ff4655; font-family: Orbitron;">0</div>
+      <div id="rankText" style="font-size: 1.5rem; color: gold; font-family: Orbitron; margin-bottom: 20px;">IRON</div>
+      
+      <div class="leaderboard-container">
+        <h3 style="font-family: Orbitron;">GLOBAL LEADERBOARD</h3>
+        <table>
+          <thead><tr><th>#</th><th>Agent</th><th>Score</th><th>Tier</th></tr></thead>
+          <tbody id="endLeaderboard"></tbody>
+        </table>
+      </div>
+      <button onclick="location.reload()" style="margin-top: 20px; background: #111; border: 1px solid #ff4655;">RETURN TO MENU</button>
+    </div>
+  </section>
 
-  <div class="rank" id="rankText">IRON</div>
-
-  <p id="playerFinal"></p>
-
-  <div class="leaderboard">
-    <h2 style="font-family:Orbitron">🏆 LEADERBOARD</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Player</th>
-          <th>Score</th>
-          <th>Tier</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboardBody"></tbody>
-    </table>
-  </div>
-</div>
-
-  </section><script>
+<script>
   const questions = [
-    {
-      question: 'Analisis data berarti ...',
-      answers: [
-        'Menggambar grafik tanpa data',
-        'Mengolah data agar lebih bermanfaat',
-        'Menghapus data mentah',
-        'Menyimpan data di komputer'
-      ],
-      correct: 1
-    },
-    {
-      question: 'Jenis grafik yang digunakan untuk visualisasi data adalah ...',
-      answers: [
-        'Pohon dan bunga',
-        'Kolom, garis, pai, batang',
-        'Tabel dan kursi',
-        'Jembatan dan rumah'
-      ],
-      correct: 1
-    },
-    {
-      question: 'Tujuan peringkasan data adalah ...',
-      answers: [
-        'Menambah jumlah data',
-        'Membuat data terlihat rumit',
-        'Menampilkan informasi penting saja',
-        'Menghapus semua data'
-      ],
-      correct: 2
-    },
-    {
-      question: 'Data mentah perlu diolah karena ...',
-      answers: [
-        'Sulit dibawa ke kelas',
-        'Tidak bisa dibaca komputer',
-        'Tidak langsung memberikan informasi',
-        'Selalu salah'
-      ],
-      correct: 2
-    },
-    {
-      question: 'Contoh penerapan analisis data di sekolah adalah ...',
-      answers: [
-        'Menggambar di papan tulis',
-        'Menentukan rata-rata nilai siswa',
-        'Bermain game online',
-        'Menghitung jumlah kursi di kelas'
-      ],
-      correct: 1
-    }
+    { q: 'Analisis data berarti ...', a: ['Menggambar grafik tanpa data', 'Mengolah data agar lebih bermanfaat', 'Menghapus data mentah', 'Menyimpan data'], c: 1 },
+    { q: 'Jenis grafik untuk visualisasi data adalah ...', a: ['Pohon dan bunga', 'Kolom, garis, pai, batang', 'Tabel dan kursi', 'Jembatan'], c: 1 },
+    { q: 'Tujuan peringkasan data adalah ...', a: ['Menambah jumlah data', 'Membuat rumit', 'Menampilkan info penting saja', 'Menghapus data'], c: 2 },
+    { q: 'Data mentah perlu diolah karena ...', a: ['Sulit dibawa', 'Tidak bisa dibaca komputer', 'Tidak langsung memberi info', 'Selalu salah'], c: 2 },
+    { q: 'Contoh analisis data di sekolah ...', a: ['Gambar papan tulis', 'Menghitung rata-rata nilai', 'Main game', 'Hitung kursi'], c: 1 }
   ];
 
   let currentQuestion = 0;
   let score = 0;
   let timer;
   let timeLeft = 20;
-  let playerName = '';
   let nickname = '';
 
-  function startQuiz() {
-    if(localStorage.getItem('quizPlayed')) {
-      alert('Perangkat ini sudah pernah mengerjakan quiz!');
-      return;
-    }
+  // FUNGSI MUSIK (Auto-play saat klik pertama)
+  function playMusic() {
+    const music = document.getElementById('bgMusic');
+    music.volume = 0.3;
+    music.play().catch(() => console.log("Audio waiting for interaction"));
+  }
 
-    playerName = document.getElementById('name').value.trim();
+  function startQuiz() {
+    playMusic(); // Memulai musik saat tombol start ditekan
+    const name = document.getElementById('name').value.trim();
     nickname = document.getElementById('nickname').value.trim();
 
-    if(!playerName || !nickname) {
-      alert('Isi semua data terlebih dahulu!');
-      return;
-    }
-
-    document.getElementById('playerDisplay').innerText = nickname;
-
+    if(!name || !nickname) return alert("Agent! Identitas diperlukan sebelum misi dimulai.");
+    
+    document.getElementById('playerDisplay').innerText = `AGENT: ${nickname.toUpperCase()}`;
     showScreen('quizScreen');
     loadQuestion();
   }
 
-  function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(screen => {
-      screen.classList.remove('active');
-    });
-
-    document.getElementById(screenId).classList.add('active');
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
   }
 
   function loadQuestion() {
-    resetTimer();
+    clearInterval(timer);
+    timeLeft = 20;
+    document.getElementById('timer').innerText = timeLeft;
 
-    const q = questions[currentQuestion];
-
+    const data = questions[currentQuestion];
     document.getElementById('questionNumber').innerText = `MISSION ${String(currentQuestion + 1).padStart(2, '0')}`;
-    document.getElementById('questionText').innerText = q.question;
+    document.getElementById('questionText').innerText = data.q;
 
     const container = document.getElementById('answersContainer');
     container.innerHTML = '';
 
-    q.answers.forEach((answer, index) => {
+    data.a.forEach((text, i) => {
       const btn = document.createElement('button');
-      btn.classList.add('answer-btn');
-      btn.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${answer}`;
-
-      btn.onclick = () => selectAnswer(index, btn);
-
+      btn.className = 'answer-btn';
+      btn.innerHTML = `<strong>${String.fromCharCode(65+i)}.</strong> ${text}`;
+      btn.onclick = () => {
+        clearInterval(timer);
+        if(i === data.c) {
+          btn.classList.add('correct');
+          score += 20;
+          document.getElementById('score').innerText = score;
+        } else {
+          btn.classList.add('wrong');
+          container.children[data.c].classList.add('correct');
+        }
+        setTimeout(nextQuestion, 1200);
+      };
       container.appendChild(btn);
     });
-
-    startTimer();
-  }
-
-  function selectAnswer(index, btn) {
-    clearInterval(timer);
-
-    const q = questions[currentQuestion];
-    const buttons = document.querySelectorAll('.answer-btn');
-
-    buttons.forEach(b => b.disabled = true);
-
-    if(index === q.correct) {
-      btn.classList.add('correct');
-      score += 20;
-      document.getElementById('score').innerText = score;
-    } else {
-      btn.classList.add('wrong');
-      buttons[q.correct].classList.add('correct');
-    }
-
-    setTimeout(() => {
-      currentQuestion++;
-
-      if(currentQuestion < questions.length) {
-        loadQuestion();
-      } else {
-        finishQuiz();
-      }
-    }, 1500);
-  }
-
-  function startTimer() {
-    timeLeft = 20;
-    document.getElementById('timer').innerText = timeLeft;
 
     timer = setInterval(() => {
       timeLeft--;
       document.getElementById('timer').innerText = timeLeft;
-
-      if(timeLeft <= 0) {
-        clearInterval(timer);
-        currentQuestion++;
-
-        if(currentQuestion < questions.length) {
-          loadQuestion();
-        } else {
-          finishQuiz();
-        }
-      }
+      if(timeLeft <= 0) nextQuestion();
     }, 1000);
   }
 
-  function resetTimer() {
-    clearInterval(timer);
-  }
-
-  function getRank(score) {
-    if(score >= 100) return 'RADIANT';
-    if(score >= 80) return 'PLATINUM';
-    if(score >= 60) return 'GOLD';
-    if(score >= 40) return 'SILVER';
-    if(score >= 20) return 'BRONZE';
-    return 'IRON';
+  function nextQuestion() {
+    currentQuestion++;
+    if(currentQuestion < questions.length) loadQuestion();
+    else finishQuiz();
   }
 
   function finishQuiz() {
-    const usedDevices = JSON.parse(localStorage.getItem('usedDevices')) || [];
-
-    if(!usedDevices.includes(nickname)) {
-      usedDevices.push(nickname);
-    }
-
-    localStorage.setItem('usedDevices', JSON.stringify(usedDevices));
-    localStorage.setItem('quizPlayed', 'true');
-
-    const rank = getRank(score);
-
+    const rank = score >= 100 ? 'RADIANT' : score >= 80 ? 'PLATINUM' : score >= 60 ? 'GOLD' : score >= 40 ? 'SILVER' : 'IRON';
     document.getElementById('finalScore').innerText = score;
     document.getElementById('rankText').innerText = rank;
-    document.getElementById('playerFinal').innerHTML = `Player <strong>${nickname}</strong> berhasil menyelesaikan ranked mission.`;
 
-    saveLeaderboard({
-      nickname,
-      score,
-      rank
-    });
-
-    loadLeaderboard();
-
+    saveData(nickname, score, rank);
+    loadLeaderboards();
     showScreen('resultScreen');
   }
 
-  function saveLeaderboard(player) {
-    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-
-    const existingPlayer = leaderboard.find(p => p.nickname.toLowerCase() === player.nickname.toLowerCase());
-
-    if(!existingPlayer) {
-      leaderboard.push(player);
-    }
-
-    leaderboard.sort((a,b) => b.score - a.score);
-
-    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+  function saveData(nick, sc, rnk) {
+    let lb = JSON.parse(localStorage.getItem('strikeLeaderboard')) || [];
+    lb.push({ name: nick, score: sc, rank: rnk });
+    lb.sort((a,b) => b.score - a.score);
+    localStorage.setItem('strikeLeaderboard', JSON.stringify(lb.slice(0, 10))); // Ambil top 10
   }
 
-  function loadLeaderboard() {
-    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-
-    const body = document.getElementById('leaderboardBody');
-    const frontBody = document.getElementById('frontLeaderboard');
-
-    body.innerHTML = '';
-    frontBody.innerHTML = '';
-
-    leaderboard.forEach((player, index) => {
-      const row = `
-        <tr>
-          <td>#${index + 1}</td>
-          <td>${player.nickname}</td>
-          <td>${player.score}</td>
-          <td>${player.rank}</td>
-        </tr>
-      `;
-
-      body.innerHTML += row;
-      frontBody.innerHTML += row;
-    });
-  }</td>
-          <td>${player.nickname}</td>
-          <td>${player.score}</td>
-          <td>${player.rank}</td>
-        </tr>
-      `;
-    });
+  function loadLeaderboards() {
+    const lb = JSON.parse(localStorage.getItem('strikeLeaderboard')) || [];
+    const html = lb.map((p, i) => `
+      <tr>
+        <td>#${i+1}</td>
+        <td>${p.name}</td>
+        <td>${p.score}</td>
+        <td><span class="rank-tag" style="background:${p.score >= 80 ? '#1f8f4d' : '#444'}">${p.rank}</span></td>
+      </tr>
+    `).join('');
+    
+    document.getElementById('frontLeaderboard').innerHTML = html || '<tr><td colspan="4">No Data Recorded</td></tr>';
+    document.getElementById('endLeaderboard').innerHTML = html;
   }
 
-  window.addEventListener('load', () => {
-    loadLeaderboard();
-    let progress = 0;
-    const bar = document.getElementById('loadingBar');
-
-    const loading = setInterval(() => {
-      progress += 10;
-      bar.style.width = progress + '%';
-
-      if(progress >= 100) {
-        clearInterval(loading);
-
-        setTimeout(() => {
-          document.getElementById('loadingScreen').style.display = 'none';
-        }, 500);
+  // Loading Bar Logic
+  window.onload = () => {
+    loadLeaderboards();
+    let prog = 0;
+    const inv = setInterval(() => {
+      prog += 5;
+      document.getElementById('loadingBar').style.width = prog + '%';
+      if(prog >= 100) {
+        clearInterval(inv);
+        document.getElementById('loadingScreen').style.opacity = '0';
+        setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 500);
       }
-    }, 120);
-  });
-
-  function toggleMusic() {
-    const music = document.getElementById('bgMusic');
-
-    if(music.paused) {
-      music.play();
-    } else {
-      music.pause();
-    }
-  }
-
-  function forcePlayMusic() {
-    const music = document.getElementById('bgMusic');
-    music.volume = 0.4;
-    music.play().catch(() => {
-      alert('Browser memblokir autoplay. Tekan lagi tombol musik.');
-    });
-  } else {
-      music.pause();
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const music = document.getElementById('bgMusic');
-    music.volume = 0.35;
-
-    const startMusic = () => {
-      music.play().catch(() => {});
-      document.removeEventListener('click', startMusic);
-    };
-
-    document.addEventListener('click', startMusic);
-  });
-</script></body>
+    }, 50);
+  };
+</script>
+</body>
 </html>
